@@ -51,7 +51,7 @@ eventInitDict) {
     });
 }
 
-/* eslint-disable no-alert */
+/* eslint-disable class-methods-use-this */
 function filterNamespacedAttributes(attributes) {
     const newAttributes = {};
     Object.entries(attributes).forEach(([key, value]) => {
@@ -88,47 +88,53 @@ class OscdSave extends s {
         const actions = [];
         edits.forEach(edit => {
             if (isInsert(edit))
-                actions.push(this.handleInsert(edit));
+                actions.push(this.insertToCreate(edit));
             if (isUpdate(edit))
-                actions.push(this.handleUpdate(edit));
+                actions.push(this.updateToOldUpdate(edit));
             if (isRemove(edit)) {
-                const del = this.handleRemove(edit);
+                const del = this.removeToDelete(edit);
                 if (del)
                     actions.push(del);
             }
         });
         const title = `${actions.length} elements changed`;
         this.dispatchEvent(newActionEvent({ title, actions }));
-        return { title, actions };
+    }
+    updateToOldUpdate({ element, attributes }) {
+        const newAttributes = addMissingAttributes(element, filterNamespacedAttributes(attributes));
+        return createUpdateAction(element, newAttributes);
     }
     handleUpdate({ element, attributes }) {
         const newAttributes = addMissingAttributes(element, filterNamespacedAttributes(attributes));
         this.dispatchEvent(newActionEvent(createUpdateAction(element, newAttributes)));
-        return createUpdateAction(element, newAttributes);
     }
-    handleRemove({ node }) {
+    removeToDelete({ node }) {
         if (node.parentNode) {
             this.dispatchEvent(newActionEvent({ old: { parent: node.parentNode, element: node } }));
             return { old: { parent: node.parentNode, element: node } };
         }
         return null;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    handleInsert({ parent, node, reference }) {
-        this.dispatchEvent(newActionEvent({ new: { parent, element: node } }));
+    handleRemove({ node }) {
+        if (node.parentNode) {
+            this.dispatchEvent(newActionEvent({ old: { parent: node.parentNode, element: node } }));
+        }
+    }
+    insertToCreate({ parent, node, reference }) {
         return { new: { parent, element: node } };
     }
-    // eslint-disable-next-line class-methods-use-this, consistent-return
+    handleInsert({ parent, node, reference }) {
+        this.dispatchEvent(newActionEvent({ new: { parent, element: node } }));
+    }
     handleEdit(edit) {
         if (isInsert(edit))
-            return this.handleInsert(edit);
+            this.handleInsert(edit);
         if (isUpdate(edit))
-            return this.handleUpdate(edit);
+            this.handleUpdate(edit);
         if (isRemove(edit))
-            return this.handleRemove(edit);
+            this.handleRemove(edit);
         if (isComplex(edit))
-            return this.handleComplex(edit);
-        return null;
+            this.handleComplex(edit);
     }
     handleEditEvent(event) {
         const edit = event.detail;
@@ -136,9 +142,9 @@ class OscdSave extends s {
     }
     // eslint-disable-next-line class-methods-use-this
     async run() {
-        alert('I am working under the hood. Please do not disturb me like this.');
+        alert('I am working under the hood. Please do not disturb me like that.');
     }
 }
 
 export { addMissingAttributes, createUpdateAction, OscdSave as default };
-//# sourceMappingURL=oscd-action-translator.js.map
+//# sourceMappingURL=oscd-action-translate.js.map
