@@ -21,7 +21,8 @@
     "test:watch": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\""
   },
   "dependencies": {
-    "lit": "^2.4.0"
+    "lit": "^2.4.0",
+    "@openscd/open-scd-core": "^0.0.1-rc2.8"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.6.6",
