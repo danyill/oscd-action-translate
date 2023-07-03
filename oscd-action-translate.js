@@ -96,6 +96,8 @@ class OscdSave extends s {
                 if (del)
                     actions.push(del);
             }
+            if (isComplex(edit))
+                this.handleComplex(edit);
         });
         const title = `${actions.length} elements changed`;
         this.dispatchEvent(newActionEvent({ title, actions }));
