@@ -86,6 +86,7 @@ export default class OscdSave extends LitElement {
         const del = this.removeToDelete(edit);
         if (del) actions.push(del);
       }
+      if (isComplex(edit)) this.handleComplex(edit);
     });
 
     const title = `${actions.length} elements changed`;
