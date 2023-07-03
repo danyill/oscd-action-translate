@@ -25,7 +25,7 @@ jobs:
         run: npm ci
 
       - name: Bundle
-        run: npm run-script bundle
+        run: npm run-script build
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
