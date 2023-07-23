@@ -86,7 +86,7 @@ class OscdSave extends s {
     }
     handleComplex(edits) {
         const actions = [];
-        edits.forEach(edit => {
+        edits.flat(Infinity).forEach(edit => {
             if (isInsert(edit))
                 actions.push(this.insertToCreate(edit));
             if (isUpdate(edit))
@@ -96,8 +96,7 @@ class OscdSave extends s {
                 if (del)
                     actions.push(del);
             }
-            if (isComplex(edit))
-                this.handleComplex(edit);
+            // if (isComplex(edit)) this.handleComplex(edit);
         });
         const title = `${actions.length} elements changed`;
         this.dispatchEvent(newActionEvent({ title, actions }));
