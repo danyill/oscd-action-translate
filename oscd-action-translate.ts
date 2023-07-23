@@ -79,14 +79,14 @@ export default class OscdSave extends LitElement {
   handleComplex(edits: Edit[]): void {
     const actions: SimpleAction[] = [];
 
-    edits.forEach(edit => {
+    edits.flat(Infinity as 1).forEach(edit => {
       if (isInsert(edit)) actions.push(this.insertToCreate(edit));
       if (isUpdate(edit)) actions.push(this.updateToOldUpdate(edit));
       if (isRemove(edit)) {
         const del = this.removeToDelete(edit);
         if (del) actions.push(del);
       }
-      if (isComplex(edit)) this.handleComplex(edit);
+      // if (isComplex(edit)) this.handleComplex(edit);
     });
 
     const title = `${actions.length} elements changed`;
